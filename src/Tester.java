@@ -33,6 +33,8 @@ public class Tester {
         System.out.println(map.get("Skunk"));
         System.out.println(map.remove("Skunk"));
         System.out.println(map.get("Skunk"));
-        System.out.print(map.getFilledSlots());
+        System.out.println(map.getFilledSlots());
+
+        System.out.println(map.containsValue(1));
     }
 }

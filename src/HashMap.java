@@ -121,6 +121,28 @@ public class HashMap<K, V> {
         }
     }
 
+    public boolean containsKey(K key){
+        int hash = getHashCode(key);
+        int ind = generateIndex(hash);
+        ind = Math.abs(ind);
+        Node<K, V> current = items[ind];
+        while(current != null){
+            if(current.hash == hash && current.key == key) return true;
+            current = current.next;
+        }
+        return false;
+    }
+
+    public boolean containsValue(V val){
+        for(Node node : items){
+            while(node != null){
+                if(node.item.equals(val)) return true;
+                node = node.next;
+            }
+        }
+        return false;
+    }
+
     private static int generateIndex(int hash){
         return hash % (load_capacity - 1);
     }
