@@ -1,4 +1,6 @@
-public class HashMap<K, V> {
+import java.util.Iterator;
+
+public class HashMap<K, V> implements Iterable<K> {
     private Node[] items;
     private static int load_capacity = 16; //DEFAULT: 16
     private int size;
@@ -8,12 +10,17 @@ public class HashMap<K, V> {
         this.items = new Node[load_capacity];
     }
 
-    private class Node<key, val>{
+    @Override
+    public Iterator<K> iterator() {
+        return new KeyIterator<>();
+    }
+
+    private class Node<E, T>{
         private final int hash;
-        private final key key;
-        private val item;
+        private final E key;
+        private T item;
         private Node next;
-        public Node(int hash, key key, val item, Node next){
+        public Node(int hash, E key, T item, Node next){
             this.hash = hash;
             this.key = key;
             this.item = item;
@@ -154,6 +161,36 @@ public class HashMap<K, V> {
 
     private static int getHashCode(Object o){
         return o != null ? o.hashCode() & 0x7fffffff : 0;
+    }
+
+    private class KeyIterator<I> implements Iterator<I>{
+        int pos;
+        I[] keys;
+
+        public KeyIterator(){
+            keys = (I[]) new Object[size];
+            int p = 0;
+            for(int i = 0; i < items.length; i++){
+                if(items[i] == null) continue;
+                Node current = items[i];
+                while(current != null){
+                    I key = (I) current.key;
+                    keys[p++] = key;
+                    current = current.next;
+                }
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return pos < keys.length;
+        }
+
+        @Override
+        public I next() {
+            if(!hasNext()) return null;
+            return keys[pos++];
+        }
     }
 
 }
