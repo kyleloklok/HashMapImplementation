@@ -3,7 +3,6 @@ public class Tester {
         HashMap<String, Integer> map = new HashMap<>();
         map.put("Bob", 10);
         map.put("Honey", 121);
-        map.put("Honey", 123123);
         map.put("AJ", 1231);
         map.put("Joshie", 32021);
         map.put("Greg", 590231);
@@ -34,6 +33,7 @@ public class Tester {
         System.out.println(map.remove("Skunk"));
         System.out.println(map.get("Skunk"));
         System.out.println(map.getFilledSlots());
+        System.out.println(map.getAvailableSlots());
 
         System.out.println(map.containsValue(1));
     }

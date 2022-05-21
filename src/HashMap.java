@@ -40,7 +40,6 @@ public class HashMap<K, V> {
     public void put(K key, V val){
         int hash = getHashCode(key);
         int ind = generateIndex(hash);
-        ind = Math.abs(ind);
         ensureCapacity();
         Node<K, V> node = new Node(hash, key, val, null);
         if(items[ind] == null){
@@ -67,7 +66,6 @@ public class HashMap<K, V> {
     public V get(K key){
         int hash = getHashCode(key);
         int ind = generateIndex(hash);
-        ind = Math.abs(ind);
         Node<K, V> current = items[ind];
         while(current != null){
             if(current.hash == hash && current.key == key){
@@ -81,7 +79,6 @@ public class HashMap<K, V> {
     public V remove(K key){
         int hash = getHashCode(key);
         int ind = generateIndex(hash);
-        ind = Math.abs(ind);
         Node<K, V> current = items[ind];
         if(current.next == null){
             if(current.hash == hash && current.key.equals(key)){
@@ -111,9 +108,17 @@ public class HashMap<K, V> {
                 Node current = items[i];
                 while(current != null){
                     int ind = generateIndex(current.hash);
-                    ind = Math.abs(ind);
-                    if(temp[ind] == null) filledSlots++;
-                    temp[ind] = current;
+                    if(temp[ind] == null){
+                        filledSlots++;
+                        temp[ind] = current;
+                    }
+                    else{
+                        Node<K, V> node = temp[ind];
+                        while(node.next != null){
+                            node = node.next;
+                        }
+                        node.next = current;
+                    }
                     current = current.next;
                 }
             }
@@ -148,7 +153,7 @@ public class HashMap<K, V> {
     }
 
     private static int getHashCode(Object o){
-        return o != null ? o.hashCode() : 0;
+        return o != null ? o.hashCode() & 0x7fffffff : 0;
     }
 
 }
