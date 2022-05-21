@@ -1,11 +1,11 @@
 public class HashMap<K, V> {
     private Node[] items;
-    private static final int DEFAULT_CAPACITY = 16; //16
+    private static int load_capacity = 16; //DEFAULT: 16
     private int size;
     private int filledSlots;
 
     public HashMap(){
-        this.items = new Node[DEFAULT_CAPACITY];
+        this.items = new Node[load_capacity];
     }
 
     private class Node<key, val>{
@@ -25,16 +25,23 @@ public class HashMap<K, V> {
         return size;
     }
 
+    public int getAvailableSlots(){
+        return load_capacity - filledSlots;
+    }
+
+    public int getFilledSlots(){
+        return filledSlots;
+    }
+
     public boolean isEmpty(){
         return size == 0;
     }
 
     public void put(K key, V val){
         int hash = getHashCode(key);
-        if(hash < 0) hash *= -1;
-        int ind = hash % (DEFAULT_CAPACITY - 1);
+        int ind = generateIndex(hash);
+        ind = Math.abs(ind);
         ensureCapacity();
-        if(ind >= items.length) resize(ind);
         Node<K, V> node = new Node(hash, key, val, null);
         if(items[ind] == null){
             items[ind] = node;
@@ -59,8 +66,8 @@ public class HashMap<K, V> {
 
     public V get(K key){
         int hash = getHashCode(key);
-        if(hash < 0) hash *= -1;
-        int ind = hash % (DEFAULT_CAPACITY - 1);
+        int ind = generateIndex(hash);
+        ind = Math.abs(ind);
         Node<K, V> current = items[ind];
         while(current != null){
             if(current.hash == hash && current.key == key){
@@ -73,14 +80,15 @@ public class HashMap<K, V> {
 
     public V remove(K key){
         int hash = getHashCode(key);
-        if(hash < 0) hash *= -1;
-        int ind = hash % (DEFAULT_CAPACITY - 1);
+        int ind = generateIndex(hash);
+        ind = Math.abs(ind);
         Node<K, V> current = items[ind];
         if(current.next == null){
             if(current.hash == hash && current.key.equals(key)){
                 V item = current.item;
                 items[ind] = null;
                 size--;
+                filledSlots--;
                 return item;
             } else return null;
         }
@@ -96,20 +104,25 @@ public class HashMap<K, V> {
 
     private void ensureCapacity(){
         if(filledSlots >= items.length * 0.75){
+            load_capacity *= 2;
+            filledSlots = 0;
             Node<K, V>[] temp = new Node[items.length * 2];
             for(int i = 0; i < items.length; i++){
-                temp[i] = items[i];
+                Node current = items[i];
+                while(current != null){
+                    int ind = generateIndex(current.hash);
+                    ind = Math.abs(ind);
+                    if(temp[ind] == null) filledSlots++;
+                    temp[ind] = current;
+                    current = current.next;
+                }
             }
             items = temp;
         }
     }
 
-    private void resize(int ind){
-        Node<K, V>[] temp = new Node[ind + 1];
-        for(int i = 0; i < items.length; i++){
-            temp[i] = items[i];
-        }
-        items = temp;
+    private static int generateIndex(int hash){
+        return hash % (load_capacity - 1);
     }
 
     private static int getHashCode(Object o){

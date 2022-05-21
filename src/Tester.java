@@ -15,8 +15,24 @@ public class Tester {
         map.put("Zig", 932402);
         map.put("Wiggles", 241231);
         map.put("Ernie", 83722);
+        map.put("Crispy", 1230341);
+        map.put("Potato Chip Benny", 83402);
+        map.put("Skunk", 62731);
+        map.put("Bear", 42934);
+        map.put("Hunter", 23901);
+        map.put("Fregley", 5049);
+        map.put("Rodrick", 12345);
+        map.put("Steve", 8381);
+        map.put("Alex", 429231);
+
         System.out.println(map.get("Wiggles"));
         System.out.println(map.remove("Ernie"));
         System.out.println(map.get("Ernie"));
+        System.out.println(map.get("Potato Chip Benny"));
+        System.out.println(map.get("Trumpet"));
+        System.out.println(map.get("Skunk"));
+        System.out.println(map.remove("Skunk"));
+        System.out.println(map.get("Skunk"));
+        System.out.print(map.getFilledSlots());
     }
 }
