@@ -1,6 +1,6 @@
 public class Tester {
     public static void main(String[] args){
-        HashMap<String, Integer> map = new HashMap<>();
+        HashMap<String, Integer> map = new HashMap<>(5, 0.8);
         map.put("Bob", 10);
         map.put("Honey", 121);
         map.put("AJ", 1231);
@@ -25,16 +25,22 @@ public class Tester {
         map.put("Alex", 429231);
 
         System.out.println(map.get("Wiggles"));
-        System.out.println(map.remove("Ernie"));
         System.out.println(map.get("Ernie"));
         System.out.println(map.get("Potato Chip Benny"));
         System.out.println(map.get("Trumpet"));
         System.out.println(map.get("Skunk"));
-        System.out.println(map.remove("Skunk"));
-        System.out.println(map.get("Skunk"));
         System.out.println(map.getFilledSlots());
         System.out.println(map.getAvailableSlots());
+        System.out.println(map.containsValue(429231));
 
-        System.out.println(map.containsValue(1));
+        int count = 0;
+        for(String key : map){
+            count++;
+            System.out.print(key + " ");
+        }
+
+        System.out.println();
+        System.out.print(count);
+
     }
 }

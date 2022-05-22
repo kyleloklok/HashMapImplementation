@@ -2,12 +2,20 @@ import java.util.Iterator;
 
 public class HashMap<K, V> implements Iterable<K> {
     private Node[] items;
-    private static int load_capacity = 16; //DEFAULT: 16
+    private int load_capacity = 16;//DEFAULT: 16
+    private double load_factor;
     private int size;
     private int filledSlots;
 
     public HashMap(){
         this.items = new Node[load_capacity];
+        load_factor = 0.75;
+    }
+
+    public HashMap(int load_capacity, double load_factor){
+        this.load_capacity = load_capacity;
+        this.items = new Node[this.load_capacity];
+        this.load_factor = load_factor;
     }
 
     @Override
@@ -107,26 +115,27 @@ public class HashMap<K, V> implements Iterable<K> {
     }
 
     private void ensureCapacity(){
-        if(filledSlots >= items.length * 0.75){
+        if(filledSlots >= items.length * load_factor){
             load_capacity *= 2;
             filledSlots = 0;
-            Node<K, V>[] temp = new Node[items.length * 2];
+            Node<K, V>[] temp = new Node[load_capacity];
             for(int i = 0; i < items.length; i++){
                 Node current = items[i];
                 while(current != null){
+                    items[i] = current.next;
+                    current.next = null;
                     int ind = generateIndex(current.hash);
                     if(temp[ind] == null){
                         filledSlots++;
                         temp[ind] = current;
-                    }
-                    else{
+                    } else{
                         Node<K, V> node = temp[ind];
                         while(node.next != null){
                             node = node.next;
                         }
                         node.next = current;
                     }
-                    current = current.next;
+                    current = items[i];
                 }
             }
             items = temp;
@@ -155,11 +164,11 @@ public class HashMap<K, V> implements Iterable<K> {
         return false;
     }
 
-    private static int generateIndex(int hash){
+    private int generateIndex(int hash){
         return hash % (load_capacity - 1);
     }
 
-    private static int getHashCode(Object o){
+    private int getHashCode(Object o){
         return o != null ? o.hashCode() & 0x7fffffff : 0;
     }
 
